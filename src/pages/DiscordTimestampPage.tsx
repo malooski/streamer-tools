@@ -12,10 +12,6 @@ const RootDiv = styled.div`
     width: 500px;
     margin: 0 auto;
     justify-self: center;
-
-    * {
-        margin-bottom: 8px;
-    }
 `;
 
 export default function DiscordTimestampPage() {
@@ -44,7 +40,9 @@ export default function DiscordTimestampPage() {
     const selectedFormat = useState(formatOptions[2].value);
 
     const formattedMessage = React.useMemo(() => {
-        return `<t:${curDate.value.valueOf()}:${selectedFormat.value}>`;
+        const epochSec = Math.floor(curDate.value.valueOf() / 1000);
+
+        return `<t:${epochSec}:${selectedFormat.value}>`;
     }, [curDate.value, selectedFormat.value]);
 
     return (

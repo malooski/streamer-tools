@@ -3,6 +3,7 @@ import React from "react";
 import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import DiscordTimestampPage from "./pages/DiscordTimestampPage";
+import SandboxPage from "./pages/SandboxPage";
 
 const NavDiv = styled.div`
     width: 500px;
@@ -21,11 +22,17 @@ function App() {
         <Router>
             <NavDiv>
                 <Link to="/">Home</Link>
+                <Link to="/timezones">Timezones</Link>
                 <Link to="/discord">Discord Timestamp</Link>
+                <Link to="/sandbox">Sandbox</Link>
             </NavDiv>
             <Switch>
+                <Route path="/timezones">hi</Route>
                 <Route path="/discord">
                     <DiscordTimestampPage />
+                </Route>
+                <Route path="/sandbox">
+                    <SandboxPage />
                 </Route>
             </Switch>
         </Router>
