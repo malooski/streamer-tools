@@ -2,9 +2,8 @@ import { addMonths, addYears, format, isSameDay, isSameMonth, subMonths, subYear
 import { eachDayOfInterval, endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns/esm";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
-import Button from "./Button";
-import ButtonGroup from "./ButtonGroup";
 import { COLOR } from "./constants";
+import { FlexRow } from "./div";
 
 export interface CalendarInputProps {
     value: Date;
@@ -28,8 +27,21 @@ const CalendarDiv = styled.div`
     grid-template-rows: repeat(7, 32px);
 `;
 
-const CalNavButton = styled(Button)`
-    border-radius: 8px 8px 0px 0px;
+const CAL_BTN_RADIUS = "8px";
+const CalNavButton = styled.button`
+    border-radius: ${CAL_BTN_RADIUS} ${CAL_BTN_RADIUS} 0px 0px;
+`;
+const CalNavButtonGroup = styled.div`
+    display: flex;
+    flex-direction: row;
+
+    ${CalNavButton}:first-child {
+        border-radius: ${CAL_BTN_RADIUS} 0px 0px 0px;
+    }
+
+    ${CalNavButton}:last-child {
+        border-radius: 0px ${CAL_BTN_RADIUS} 0px 0px;
+    }
 `;
 
 const WeekdayDiv = styled.div`
@@ -53,29 +65,33 @@ export default function CalendarInput(props: CalendarInputProps) {
     return (
         <RootDiv>
             <HeaderDiv>
-                <ButtonGroup>
+                <CalNavButtonGroup>
                     <CalNavButton onClick={onPrevYear} title="Previous Year">
                         &lt;&lt;
                     </CalNavButton>
                     <CalNavButton onClick={onPrevMonth} title="Previous Month">
                         &lt;
                     </CalNavButton>
-                </ButtonGroup>
+                </CalNavButtonGroup>
                 <div>{headerText}</div>
-                <ButtonGroup>
-                    <CalNavButton onClick={onReturn} title="Go To Selected">
-                        Return
-                    </CalNavButton>
-                    <CalNavButton onClick={onToday} title="Go To Today">
-                        Today
-                    </CalNavButton>
-                    <CalNavButton onClick={onNextMonth} title="Next Month">
-                        &gt;
-                    </CalNavButton>
-                    <CalNavButton onClick={onNextYear} title="Next Year">
-                        &gt;&gt;
-                    </CalNavButton>
-                </ButtonGroup>
+                <FlexRow>
+                    <CalNavButtonGroup style={{ marginRight: 8 }}>
+                        <CalNavButton onClick={onReturn} title="Go To Selected">
+                            Return
+                        </CalNavButton>
+                        <CalNavButton onClick={onToday} title="Go To Today">
+                            Today
+                        </CalNavButton>
+                    </CalNavButtonGroup>
+                    <CalNavButtonGroup>
+                        <CalNavButton onClick={onNextMonth} title="Next Month">
+                            &gt;
+                        </CalNavButton>
+                        <CalNavButton onClick={onNextYear} title="Next Year">
+                            &gt;&gt;
+                        </CalNavButton>
+                    </CalNavButtonGroup>
+                </FlexRow>
             </HeaderDiv>
 
             <CalendarDiv>
