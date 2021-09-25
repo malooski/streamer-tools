@@ -181,21 +181,14 @@ interface CalDayButtonProps {
 }
 
 const CalDayButton = React.memo((props: CalDayButtonProps) => {
-    const title = useMemo(() => format(props.current, "PPPP"), [props.current]);
-    const text = useMemo(() => format(props.current, "d"), [props.current]);
+    const { current, value, focused } = props;
 
-    const isActive = useMemo(
-        () => isSameDay(props.current, props.value),
-        [props.current, props.value]
-    );
-    const isFocused = useMemo(
-        () => isSameDay(props.current, props.focused),
-        [props.current, props.focused]
-    );
-    const isWithinMonth = useMemo(
-        () => isSameMonth(props.current, props.focused),
-        [props.current, props.focused]
-    );
+    const title = useMemo(() => format(current, "PPPP"), [current]);
+    const text = useMemo(() => format(current, "d"), [current]);
+
+    const isActive = useMemo(() => isSameDay(current, value), [current, value]);
+    const isFocused = useMemo(() => isSameDay(current, focused), [current, focused]);
+    const isWithinMonth = useMemo(() => isSameMonth(current, focused), [current, focused]);
 
     return (
         <CalDayBtn

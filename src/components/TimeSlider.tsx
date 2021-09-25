@@ -1,5 +1,5 @@
 import { eachHourOfInterval, startOfDay } from "date-fns";
-import { addHours, addSeconds, endOfDay, format } from "date-fns/esm";
+import { addSeconds, endOfDay, format } from "date-fns/esm";
 import React from "react";
 import styled from "styled-components";
 import { mapValue } from "../util";
@@ -178,8 +178,6 @@ export default function TimeSlider(props: TimeSliderProps) {
         if (!rootRefCurr) return;
         if (!hoverPct) return;
 
-        const bbox = rootRefCurr.getBoundingClientRect();
-        const clickedPct = (e.clientX - bbox.x) / bbox.width;
         const clickedDate = dayByPercent(props.value, hoverPct);
 
         props.onValueChange?.(clickedDate);
