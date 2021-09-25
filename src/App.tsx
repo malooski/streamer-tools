@@ -4,6 +4,7 @@ import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import DiscordTimestampPage from "./pages/DiscordTimestampPage";
 import SandboxPage from "./pages/SandboxPage";
+import TimezonesPage from "./pages/TimezonesPage";
 
 const NavDiv = styled.div`
     width: 500px;
@@ -27,7 +28,9 @@ function App() {
                 <Link to="/sandbox">Sandbox</Link>
             </NavDiv>
             <Switch>
-                <Route path="/timezones">hi</Route>
+                <Route path="/timezones">
+                    <TimezonesPage />
+                </Route>
                 <Route path="/discord">
                     <DiscordTimestampPage />
                 </Route>
