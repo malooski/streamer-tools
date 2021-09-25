@@ -24,14 +24,14 @@ jobs:
                   PUBLIC_PATH: /streamer-tools/
 
             - name: Prepare for deployment
-              run: touch dist/.nojekyll
+              run: touch build/.nojekyll
 
             - name: Deploy to Github Pages
               if: success()
               uses: crazy-max/ghaction-github-pages@v2.0.0
               with:
                   target_branch: gh-pages
-                  build_dir: dist
+                  build_dir: build
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
