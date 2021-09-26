@@ -1,5 +1,4 @@
-import { addHours } from "date-fns/esm";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { MaybeLink } from "../components/MaybeLink";
 import TimeInput from "../components/TimeInput";
@@ -43,7 +42,7 @@ const COMMON_TIMEZONES = [
 
 export default function TimezonesPage() {
     const [refTime, setRefTime] = useState(new Date());
-    const [friends, setFriends] = useState<Friend[]>([]);
+    const [friends] = useState<Friend[]>([]);
 
     return (
         <RootDiv>

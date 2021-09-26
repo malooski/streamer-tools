@@ -1,6 +1,6 @@
 import { eachHourOfInterval, startOfDay } from "date-fns";
 import { addSeconds, endOfDay, format } from "date-fns/esm";
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { mapValue } from "../util";
 
@@ -86,7 +86,7 @@ const NIGHT_END_HOUR = 24;
 
 export default function TimeSlider(props: TimeSliderProps) {
     const { coerce, value, disabled } = props;
-    const myValue = value ?? new Date();
+    const myValue = useMemo(() => value ?? new Date(), [value]);
 
     const rootRef = React.useRef<HTMLDivElement>();
     const [rawHoverPct, setRawHoverPct] = React.useState<number | null>();

@@ -1,6 +1,5 @@
 import { format, isValid, parse, addMinutes, subMinutes } from "date-fns";
-import { format as formatTz, zonedTimeToUtc } from "date-fns-tz";
-import { utcToZonedTime } from "date-fns-tz/esm";
+import { zonedTimeToUtc, utcToZonedTime } from "date-fns-tz";
 import React, { useEffect, useMemo, useState } from "react";
 
 export interface TimeInputProps {
@@ -30,7 +29,7 @@ export default function TimeInput(props: TimeInputProps): JSX.Element {
 
     useEffect(() => {
         setRaw(format(tzValue, FORMAT_STYLE));
-    }, [myValue]);
+    }, [tzValue]);
 
     const placeholder = format(toTimezoned(new Date(), timezone), FORMAT_STYLE);
 
