@@ -65,7 +65,10 @@ export default function TimezonesPage() {
 
     return (
         <RootDiv>
-            <label>Your Time</label>
+            <div>
+                <label>Your Time</label>
+                <button onClick={() => setRefTime(new Date())}>Now</button>
+            </div>
             <TimeInput value={refTime} onValueChange={setRefTime} />
 
             <h3>Common</h3>
