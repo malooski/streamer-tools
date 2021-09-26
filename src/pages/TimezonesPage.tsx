@@ -1,3 +1,5 @@
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { MaybeLink } from "../components/MaybeLink";
@@ -13,6 +15,10 @@ const RootDiv = styled.div`
     width: 500px;
     margin: 0 auto;
     justify-self: center;
+
+    h1 {
+        margin: 32px 0px 0px 0px;
+    }
 `;
 
 const NewFriendDiv = styled.div`
@@ -33,11 +39,42 @@ const FriendsDiv = styled.div`
     grid-gap: 4pt 8pt;
 `;
 
+const YourTimeDiv = styled.div`
+    display: grid;
+    grid-template:
+        "label label label" auto
+        "input input now-btn" auto /
+        auto 1fr auto;
+
+    grid-gap: 4pt 2pt;
+
+    h1 {
+        grid-area: label;
+        font-weight: bold;
+    }
+
+    input {
+        grid-area: input;
+    }
+`;
+
+const NowButton = styled.button`
+    grid-area: now-btn;
+`;
+
+const AddFriendButton = styled.button`
+    margin-top: 8pt;
+`;
+
 interface TimezoneEntry {
     name: string;
     link?: string;
     timezone: string;
 }
+
+const TzEntryHeader = styled.span`
+    font-weight: bold;
+`;
 
 const COMMON_TIMEZONES: TimezoneEntry[] = [
     { name: "US/Pacific", timezone: "US/Pacific" },
@@ -57,6 +94,8 @@ const TIMEZONE_SUGGESTIONS = Object.keys(TIMEZONES);
 
 const FRIENDS_KEY = "STREAMER_TOOLS_TIMEZONE_FREINDS";
 
+const DelFriendButton = styled.button``;
+
 export default function TimezonesPage() {
     const [refTime, setRefTime] = useState(new Date());
     const [friends, setFriends] = useLocalStorage<TimezoneEntry[]>(FRIENDS_KEY, INITIAL_FRIENDS);
@@ -69,21 +108,25 @@ export default function TimezonesPage() {
 
     return (
         <RootDiv>
-            <div>
-                <label>Your Time</label>
-                <button onClick={() => setRefTime(new Date())}>Now</button>
-            </div>
-            <TimeInput value={refTime} onValueChange={setRefTime} />
+            <YourTimeDiv>
+                <h1>Your Time</h1>
+                <NowButton onClick={() => setRefTime(new Date())}>Now</NowButton>
+                <TimeInput
+                    title="Enter a time here to see what it would be in other timezones!"
+                    value={refTime}
+                    onValueChange={setRefTime}
+                />
+            </YourTimeDiv>
 
-            <h3>Common</h3>
+            <h1>Common</h1>
             <CommonDiv>
-                <div>Timezone</div>
-                <div>Local Time</div>
+                <TzEntryHeader>Timezone</TzEntryHeader>
+                <TzEntryHeader>Local Time</TzEntryHeader>
 
                 {COMMON_TIMEZONES.map(f => renderCommon(f))}
             </CommonDiv>
 
-            <h3>New Friend</h3>
+            <h1>New Friend</h1>
             <NewFriendDiv>
                 <label>Name</label>
                 <input
@@ -106,13 +149,13 @@ export default function TimezonesPage() {
                     onValueChange={v => setNewFriend({ timezone: v })}
                 />
             </NewFriendDiv>
-            <button onClick={onAddFriend}>Add Friend</button>
+            <AddFriendButton onClick={onAddFriend}>Add Friend</AddFriendButton>
 
-            <h3>Friends</h3>
+            <h1>Friends</h1>
             <FriendsDiv>
-                <div>Name</div>
-                <div>Timezone</div>
-                <div>Local Time</div>
+                <TzEntryHeader>Name</TzEntryHeader>
+                <TzEntryHeader>Timezone</TzEntryHeader>
+                <TzEntryHeader>Local Time</TzEntryHeader>
                 <div />
 
                 {friends.map((f, idx) => renderFriend(f, idx))}
@@ -151,7 +194,9 @@ export default function TimezonesPage() {
                 <MaybeLink href={friend.link} text={friend.name} />
                 <span>{friend.timezone}</span>
                 <TimeInput timezone={friend.timezone} value={refTime} onValueChange={setRefTime} />
-                <button onClick={() => setFriends(f => filterIdx(f, idx))}>X</button>
+                <DelFriendButton onClick={() => setFriends(f => filterIdx(f, idx))}>
+                    <FontAwesomeIcon icon={faTrash} />
+                </DelFriendButton>
             </React.Fragment>
         );
     }

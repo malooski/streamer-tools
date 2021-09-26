@@ -9,9 +9,6 @@ export interface TimeInputProps {
     disabled?: boolean;
     title?: string;
 
-    min?: Date;
-    max?: Date;
-
     timezone?: string;
 
     coerce?(value: Date): void;
