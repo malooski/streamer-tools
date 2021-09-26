@@ -1,4 +1,14 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { debounce } from "lodash";
+import {
+    DependencyList,
+    Dispatch,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export type SetValue<T> = Dispatch<SetStateAction<T>>;
 
@@ -70,4 +80,27 @@ export function useSimpleForm<T extends SimpleForm>(initialValue: T): [T, SetSim
     };
 
     return [form, setPartialForm];
+}
+
+export function useDebouncedMemo<T>(
+    factory: () => T,
+    deps: DependencyList | undefined,
+    debounceMs: number
+): T {
+    const [state, setState] = useState(factory());
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debouncedSetState = useCallback(debounce(setState, debounceMs), []);
+
+    useEffect(() => {
+        debouncedSetState(factory());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, deps);
+
+    return state;
+}
+
+export function useUuid() {
+    const [id] = useState(() => uuidv4());
+    return id;
 }

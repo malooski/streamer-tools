@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { MaybeLink } from "../components/MaybeLink";
+import { TextSuggest } from "../components/TextSuggest";
 import TimeInput from "../components/TimeInput";
+import { TIMEZONES } from "../timezones";
 import { filterIdx } from "../util";
 import { useLocalStorage, useSimpleForm } from "../util/react";
 
@@ -51,6 +53,8 @@ const INITIAL_FRIENDS: TimezoneEntry[] = [
     { name: "Malooski", link: "https://twitter.com/malooskii", timezone: "US/Central" },
 ];
 
+const TIMEZONE_SUGGESTIONS = Object.keys(TIMEZONES);
+
 const FRIENDS_KEY = "STREAMER_TOOLS_TIMEZONE_FREINDS";
 
 export default function TimezonesPage() {
@@ -96,11 +100,11 @@ export default function TimezonesPage() {
                 ></input>
 
                 <label>Timezone</label>
-                <input
-                    type="text"
+                <TextSuggest
                     value={newFriend.timezone}
-                    onChange={e => setNewFriend({ timezone: e.target.value })}
-                ></input>
+                    suggestions={TIMEZONE_SUGGESTIONS}
+                    onValueChange={v => setNewFriend({ timezone: v })}
+                />
             </NewFriendDiv>
             <button onClick={onAddFriend}>Add Friend</button>
 

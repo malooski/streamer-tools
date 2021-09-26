@@ -1,10 +1,9 @@
 import { format, formatDistanceToNow } from "date-fns";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import CopyButton from "../components/CopyButton";
 import Select, { SelectOption } from "../components/Select";
 import DateTimeInput from "../components/DateTimeInput";
-import { useState } from "../hooks";
 
 const RootDiv = styled.div`
     display: flex;
@@ -15,44 +14,44 @@ const RootDiv = styled.div`
 `;
 
 export default function DiscordTimestampPage() {
-    const curDate = useState(new Date());
+    const [curDate, setCurDate] = useState(new Date());
     const formatOptions: SelectOption<string>[] = [
-        { value: "t", text: `Short Time - ${format(curDate.value, "HH:mm")}`, key: "t" },
-        { value: "T", text: `Long Time - ${format(curDate.value, "HH:mm:ss")}`, key: "T" },
+        { value: "t", text: `Short Time - ${format(curDate, "HH:mm")}`, key: "t" },
+        { value: "T", text: `Long Time - ${format(curDate, "HH:mm:ss")}`, key: "T" },
 
-        { value: "d", text: `Short Date - ${format(curDate.value, "dd/MM/yyyy")}`, key: "d" },
-        { value: "D", text: `Long Date - ${format(curDate.value, "dd MMMM yyyy")}`, key: "D" },
+        { value: "d", text: `Short Date - ${format(curDate, "dd/MM/yyyy")}`, key: "d" },
+        { value: "D", text: `Long Date - ${format(curDate, "dd MMMM yyyy")}`, key: "D" },
 
         {
             value: "f",
-            text: `Short Date/Time - ${format(curDate.value, "dd MMMM yyyy HH:mm")}`,
+            text: `Short Date/Time - ${format(curDate, "dd MMMM yyyy HH:mm")}`,
             key: "f",
         },
         {
             value: "F",
-            text: `Long Date/Time - ${format(curDate.value, "iiii, dd MMMM yyyy HH:mm")}`,
+            text: `Long Date/Time - ${format(curDate, "iiii, dd MMMM yyyy HH:mm")}`,
             key: "F",
         },
 
-        { value: "R", text: `Relative Time - ${formatDistanceToNow(curDate.value)}`, key: "R" },
+        { value: "R", text: `Relative Time - ${formatDistanceToNow(curDate)}`, key: "R" },
     ];
 
-    const selectedFormat = useState(formatOptions[2].value);
+    const [selectedFormat, setSelectedFormat] = useState(formatOptions[2].value);
 
     const formattedMessage = React.useMemo(() => {
-        const epochSec = Math.floor(curDate.value.valueOf() / 1000);
+        const epochSec = Math.floor(curDate.valueOf() / 1000);
 
-        return `<t:${epochSec}:${selectedFormat.value}>`;
-    }, [curDate.value, selectedFormat.value]);
+        return `<t:${epochSec}:${selectedFormat}>`;
+    }, [curDate, selectedFormat]);
 
     return (
         <RootDiv>
-            <DateTimeInput value={curDate.value} onValueChange={curDate.set} />
+            <DateTimeInput value={curDate} nulllable onValueChange={setCurDate} />
 
             <Select
-                value={selectedFormat.value}
+                value={selectedFormat}
                 options={formatOptions}
-                onValueChange={selectedFormat.set}
+                onValueChange={setSelectedFormat}
             />
 
             <CopyButton showData data={formattedMessage} />
