@@ -1,15 +1,4 @@
-import { addHours, addMinutes, closestTo, set } from "date-fns";
-
-export function mapValue<T, U>(
-    value: T | null | undefined,
-    func: (v: T) => U
-): U | null | undefined {
-    if (value == null) {
-        return value as null | undefined;
-    }
-
-    return func(value);
-}
+import { addHours, addMinutes, closestTo, isValid, parse, set } from "date-fns";
 
 export function roundToHour(value: Date, minute: number): Date {
     const thisHour = set(value, {
@@ -37,4 +26,32 @@ export function roundToMinute(value: Date, interval: number): Date {
     }
 
     return closestTo(value, candidates);
+}
+
+export function parseTime(raw: string, refDate: Date): Date | null {
+    // 12:42 pm, "12 pm", "13"
+    const formats = [
+        "h:m a", // 12:42 pm
+        "h:ma", // 12:42pm
+
+        "H:m", // 13:42
+
+        "h a", // 12 pm
+        "ha", // 12pm
+
+        "H", // 13
+    ];
+
+    for (const format of formats) {
+        try {
+            const parsedDate = parse(raw, format, refDate);
+            if (isValid(parsedDate)) {
+                return parsedDate;
+            }
+        } catch (e) {
+            continue;
+        }
+    }
+
+    return null;
 }

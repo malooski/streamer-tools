@@ -1,10 +1,13 @@
-import { format, isValid, parse, addMinutes, subMinutes } from "date-fns";
+import { format, addMinutes, subMinutes } from "date-fns";
 import { zonedTimeToUtc, utcToZonedTime } from "date-fns-tz";
 import React, { useEffect, useMemo, useState } from "react";
+import styled, { css } from "styled-components";
+import { parseTime } from "../util/date";
 
 export interface TimeInputProps {
     value?: Date;
     disabled?: boolean;
+    title?: string;
 
     min?: Date;
     max?: Date;
@@ -17,8 +20,17 @@ export interface TimeInputProps {
 
 const FORMAT_STYLE = "hh:mm a";
 
+const ERROR_INPUT_CSS = css`
+    outline: medium red solid;
+`;
+
+const Input = styled.input<{ error?: boolean }>`
+    ${p => p.error && ERROR_INPUT_CSS}
+    font-size: 14pt;
+`;
+
 export default function TimeInput(props: TimeInputProps): JSX.Element {
-    const { value, onValueChange, disabled, timezone } = props;
+    const { value, onValueChange, disabled, timezone, title } = props;
     const myValue = useMemo(() => value ?? new Date(), [value]);
     const tzValue = useMemo(() => toTimezoned(myValue, timezone), [myValue, timezone]);
 
@@ -27,6 +39,15 @@ export default function TimeInput(props: TimeInputProps): JSX.Element {
         return format(tzValue, FORMAT_STYLE);
     });
 
+    const error = useMemo(() => {
+        const parsed = parseTime(raw, tzValue);
+        if (parsed == null) {
+            console.log("bad");
+            return "Unable to parse time.";
+        }
+        return null;
+    }, [raw, tzValue]);
+
     useEffect(() => {
         setRaw(format(tzValue, FORMAT_STYLE));
     }, [tzValue]);
@@ -34,15 +55,17 @@ export default function TimeInput(props: TimeInputProps): JSX.Element {
     const placeholder = format(toTimezoned(new Date(), timezone), FORMAT_STYLE);
 
     return (
-        <input
+        <Input
+            error={error != null}
+            title={error ?? title}
             placeholder={placeholder}
-            type="datetime"
+            type="text"
             value={raw}
             disabled={disabled}
             onChange={onInputChange}
             onBlur={onInputBlur}
             onKeyDown={onInputKeyDown}
-        ></input>
+        ></Input>
     );
 
     function onInputChange(e: React.FormEvent<HTMLInputElement>) {
@@ -100,34 +123,6 @@ export default function TimeInput(props: TimeInputProps): JSX.Element {
         const newTzValue = fromTimezoned(newValue, timezone);
         onValueChange?.(newTzValue);
     }
-}
-
-function parseTime(raw: string, refDate: Date): Date | null {
-    // 12:42 pm, "12 pm", "13"
-    const formats = [
-        "h:m a", // 12:42 pm
-        "h:ma", // 12:42pm
-
-        "H:m", // 13:42
-
-        "h a", // 12 pm
-        "ha", // 12pm
-
-        "H", // 13
-    ];
-
-    for (const format of formats) {
-        try {
-            const parsedDate = parse(raw, format, refDate);
-            if (isValid(parsedDate)) {
-                return parsedDate;
-            }
-        } catch (e) {
-            continue;
-        }
-    }
-
-    return null;
 }
 
 function toTimezoned(date: Date, timezone?: string | null | undefined): Date {

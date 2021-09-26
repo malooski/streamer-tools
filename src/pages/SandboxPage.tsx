@@ -3,7 +3,7 @@ import styled from "styled-components";
 import CalendarInput from "../components/CalendarInput";
 import TimeInput from "../components/TimeInput";
 import TimeSlider from "../components/TimeSlider";
-import { roundToMinute } from "../util";
+import { roundToMinute } from "../util/date";
 
 const RootDiv = styled.div`
     display: flex;
