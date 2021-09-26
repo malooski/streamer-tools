@@ -5,14 +5,16 @@ import styled from "styled-components";
 import { mapValue } from "../util";
 
 export interface TimeSliderProps {
-    value: Date;
+    value?: Date;
+    disabled?: boolean;
+    coerce?(date: Date): Date;
     onValueChange?(date: Date): void;
 }
 
 const RootDiv = styled.div`
     position: relative;
 
-    height: 4em;
+    height: 2.5em;
 
     background-color: white;
 
@@ -83,8 +85,11 @@ const NIGHT_START_HOUR = 8 + 12;
 const NIGHT_END_HOUR = 24;
 
 export default function TimeSlider(props: TimeSliderProps) {
+    const { coerce, value, disabled } = props;
+    const myValue = value ?? new Date();
+
     const rootRef = React.useRef<HTMLDivElement>();
-    const [hoverPct, setHoverPct] = React.useState<number | null>();
+    const [rawHoverPct, setRawHoverPct] = React.useState<number | null>();
 
     const rootWidth =
         mapValue(rootRef.current, r => {
@@ -92,22 +97,32 @@ export default function TimeSlider(props: TimeSliderProps) {
             return bbox.width;
         }) ?? 100;
 
-    const dayStart = startOfDay(props.value);
-    const dayEnd = endOfDay(props.value);
+    const dayStart = React.useMemo(() => startOfDay(myValue), [myValue]);
+    const dayEnd = React.useMemo(() => endOfDay(myValue), [myValue]);
 
-    const tickDates = eachHourOfInterval({
-        start: dayStart,
-        end: dayEnd,
-    });
+    const tickDates = React.useMemo(
+        () =>
+            eachHourOfInterval(
+                {
+                    start: dayStart,
+                    end: dayEnd,
+                },
+                { step: 4 }
+            ),
+        [dayStart, dayEnd]
+    );
 
+    let hoverDate = addSeconds(dayStart, 24 * 60 * 60 * (rawHoverPct ?? 0));
+    if (coerce) hoverDate = coerce(hoverDate);
+    const hoverPct =
+        (hoverDate.valueOf() - dayStart.valueOf()) / (dayEnd.valueOf() - dayStart.valueOf());
     const hoverOffset = rootWidth * (hoverPct ?? 0);
-    const hoverDate = addSeconds(dayStart, 24 * 60 * 60 * (hoverPct ?? 0));
     const hoverText = format(hoverDate, "p");
 
     const valuePct =
-        (props.value.valueOf() - dayStart.valueOf()) / (dayEnd.valueOf() - dayStart.valueOf());
+        (myValue.valueOf() - dayStart.valueOf()) / (dayEnd.valueOf() - dayStart.valueOf());
     const valueOffset = valuePct * rootWidth;
-    const valueText = format(props.value, "p");
+    const valueText = format(myValue, "p");
 
     return (
         <RootDiv
@@ -132,10 +147,14 @@ export default function TimeSlider(props: TimeSliderProps) {
 
             {tickDates.map(d => renderTick(d))}
 
-            <ValueLine style={{ left: valueOffset }} />
-            <ValueTime style={{ left: valueOffset }}>{valueText}</ValueTime>
+            {value && (
+                <React.Fragment>
+                    <ValueLine style={{ left: valueOffset }} />
+                    <ValueTime style={{ left: valueOffset }}>{valueText}</ValueTime>
+                </React.Fragment>
+            )}
 
-            {hoverPct && (
+            {rawHoverPct && !disabled && (
                 <React.Fragment>
                     <HoverLine style={{ left: hoverOffset }} />
                     <HoverTime style={{ left: hoverOffset }}>{hoverText}</HoverTime>
@@ -145,9 +164,9 @@ export default function TimeSlider(props: TimeSliderProps) {
     );
 
     function renderTick(d: Date) {
-        const pct = getPercentOfDay(props.value, d);
+        const pct = getPercentOfDay(myValue, d);
         const offset = pct * rootWidth;
-        const text = format(d, "h");
+        const text = format(d, "h a");
 
         return (
             <React.Fragment key={d.valueOf()}>
@@ -166,19 +185,24 @@ export default function TimeSlider(props: TimeSliderProps) {
         if (!rootRefCurr) return;
 
         const bbox = rootRefCurr.getBoundingClientRect();
-        setHoverPct((e.clientX - bbox.x) / bbox.width);
+        setRawHoverPct((e.clientX - bbox.x) / bbox.width);
     }
 
     function onMouseLeave(e: React.MouseEvent) {
-        setHoverPct(null);
+        setRawHoverPct(null);
     }
 
     function onClick(e: React.MouseEvent) {
+        if (disabled) return;
+
         const rootRefCurr = rootRef.current;
         if (!rootRefCurr) return;
-        if (!hoverPct) return;
+        if (!rawHoverPct) return;
 
-        const clickedDate = dayByPercent(props.value, hoverPct);
+        let clickedDate = dayByPercent(myValue, rawHoverPct);
+        if (coerce) {
+            clickedDate = coerce(clickedDate);
+        }
 
         props.onValueChange?.(clickedDate);
     }

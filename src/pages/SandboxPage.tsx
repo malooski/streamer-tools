@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import CalendarInput from "../components/CalendarInput";
+import TimeInput from "../components/TimeInput";
 import TimeSlider from "../components/TimeSlider";
+import { roundToMinute } from "../util";
 
 const RootDiv = styled.div`
     display: flex;
@@ -17,7 +19,12 @@ export default function SandboxPage() {
     return (
         <RootDiv>
             <CalendarInput value={myDate} onValueChange={setMyDate} />
-            <TimeSlider value={myDate} onValueChange={setMyDate} />
+            <TimeInput value={myDate} onValueChange={setMyDate} />
+            <TimeSlider
+                value={myDate}
+                onValueChange={setMyDate}
+                coerce={d => roundToMinute(d, 5)}
+            />
         </RootDiv>
     );
 }
