@@ -35,7 +35,7 @@ function App() {
             <RootDiv>
                 <AboutMeHeader>
                     <div>
-                        Streamer Tools by <strong>Malooski</strong>!
+                        Streamer Tools by <strong>Malooski</strong>
                     </div>
 
                     <a href="https://twitter.com/malooskii" target="_blank" rel="noreferrer">
