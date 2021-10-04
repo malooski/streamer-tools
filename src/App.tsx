@@ -1,10 +1,8 @@
 import { faGithubSquare, faTwitterSquare } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Link, Route, Switch, Redirect } from "react-router-dom";
 import styled from "styled-components";
-import DiscordTimestampPage from "./pages/DiscordTimestampPage";
-import SandboxPage from "./pages/SandboxPage";
 import TimezonesPage from "./pages/TimezonesPage";
 
 const RootDiv = styled.div``;
@@ -52,18 +50,13 @@ function App() {
                 </AboutMeHeader>
                 <NavDiv>
                     <Link to="/timezones">Timezones</Link>
-                    <Link to="/discord">Discord Timestamp</Link>
-                    <Link to="/sandbox">Sandbox</Link>
                 </NavDiv>
                 <Switch>
+                    <Route exact path="/">
+                        <Redirect to="/timezones" />
+                    </Route>
                     <Route path="/timezones">
                         <TimezonesPage />
-                    </Route>
-                    <Route path="/discord">
-                        <DiscordTimestampPage />
-                    </Route>
-                    <Route path="/sandbox">
-                        <SandboxPage />
                     </Route>
                 </Switch>
             </RootDiv>

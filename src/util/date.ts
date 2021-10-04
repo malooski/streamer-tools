@@ -1,4 +1,5 @@
 import { addHours, addMinutes, closestTo, isValid, parse, set } from "date-fns";
+import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 
 export function roundToHour(value: Date, minute: number): Date {
     const thisHour = set(value, {
@@ -54,4 +55,31 @@ export function parseTime(raw: string, refDate: Date): Date | null {
     }
 
     return null;
+}
+
+export function parseDate(raw: string, refDate: Date): Date | null {
+    const formats = ["P", "PP", "PPP", "PPPP"];
+
+    for (const format of formats) {
+        try {
+            const parsedDate = parse(raw, format, refDate);
+            if (isValid(parsedDate)) {
+                return parsedDate;
+            }
+        } catch (e) {
+            continue;
+        }
+    }
+
+    return null;
+}
+
+export function toTimezoned(date: Date, timezone?: string | null | undefined): Date {
+    if (timezone == null) return date;
+    return utcToZonedTime(date, timezone);
+}
+
+export function fromTimezoned(date: Date, timezone?: string | null | undefined): Date {
+    if (timezone == null) return date;
+    return zonedTimeToUtc(date, timezone);
 }

@@ -1,4 +1,13 @@
-import { addMonths, addYears, format, isSameDay, isSameMonth, subMonths, subYears } from "date-fns";
+import {
+    addMonths,
+    addYears,
+    format,
+    isSameDay,
+    isSameMonth,
+    set as setDateParts,
+    subMonths,
+    subYears,
+} from "date-fns";
 import { eachDayOfInterval, endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns/esm";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
@@ -50,7 +59,9 @@ const WeekdayDiv = styled.div`
 `;
 
 export default function CalendarInput(props: CalendarInputProps) {
-    const [focused, setFocused] = React.useState(props.value);
+    const { value } = props;
+
+    const [focused, setFocused] = React.useState(value);
 
     const headerText = format(focused, "MMM yyyy");
 
@@ -116,8 +127,14 @@ export default function CalendarInput(props: CalendarInputProps) {
     );
 
     function onDayClick(date: Date) {
-        setFocused(date);
-        props.onValueChange?.(date);
+        const newDate = setDateParts(date, {
+            hours: value.getHours(),
+            milliseconds: value.getMilliseconds(),
+            minutes: value.getMinutes(),
+            seconds: value.getSeconds(),
+        });
+        setFocused(newDate);
+        props.onValueChange?.(newDate);
     }
 
     function onPrevYear() {
@@ -133,7 +150,13 @@ export default function CalendarInput(props: CalendarInputProps) {
     }
 
     function onToday() {
-        setFocused(new Date());
+        const today = setDateParts(new Date(), {
+            hours: value.getHours(),
+            milliseconds: value.getMilliseconds(),
+            minutes: value.getMinutes(),
+            seconds: value.getSeconds(),
+        });
+        setFocused(today);
     }
 
     function onNextMonth() {

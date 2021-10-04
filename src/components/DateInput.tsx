@@ -1,9 +1,9 @@
-import { addMinutes, format, subMinutes } from "date-fns";
+import { add as addDate, format, sub as subDate } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
-import { fromTimezoned, parseTime, toTimezoned } from "../util/date";
+import { fromTimezoned, parseDate, parseTime, toTimezoned } from "../util/date";
 
-export interface TimeInputProps {
+export interface DateInputProps {
     value?: Date;
     disabled?: boolean;
     title?: string;
@@ -14,7 +14,7 @@ export interface TimeInputProps {
     onValueChange?(value: Date): void;
 }
 
-const FORMAT_STYLE = "hh:mm a";
+const FORMAT_STYLE = "PP";
 
 const ERROR_INPUT_CSS = css`
     outline: medium red solid;
@@ -25,7 +25,7 @@ const Input = styled.input<{ error?: boolean }>`
     font-size: 14pt;
 `;
 
-export default function TimeInput(props: TimeInputProps): JSX.Element {
+export default function DateInput(props: DateInputProps): JSX.Element {
     const { value, onValueChange, disabled, timezone, title } = props;
     const myValue = useMemo(() => value ?? new Date(), [value]);
     const tzValue = useMemo(() => toTimezoned(myValue, timezone), [myValue, timezone]);
@@ -36,10 +36,9 @@ export default function TimeInput(props: TimeInputProps): JSX.Element {
     });
 
     const error = useMemo(() => {
-        const parsed = parseTime(raw, tzValue);
+        const parsed = parseDate(raw, tzValue);
         if (parsed == null) {
-            console.log("bad");
-            return "Unable to parse time.";
+            return "Unable to parse date.";
         }
         return null;
     }, [raw, tzValue]);
@@ -89,21 +88,33 @@ export default function TimeInput(props: TimeInputProps): JSX.Element {
             return;
         }
 
-        let incScale = 1;
+        let scaleYears = 0;
+        let scaleMonths = 0;
+        let scaleDays = 0;
         if (e.ctrlKey && e.shiftKey) {
-            incScale = 60;
+            scaleYears = 1;
         } else if (e.ctrlKey || e.shiftKey) {
-            incScale = 10;
+            scaleMonths = 1;
+        } else {
+            scaleDays = 1;
         }
 
         if (e.key === "ArrowUp") {
-            const newValue = addMinutes(myValue, incScale);
+            const newValue = addDate(myValue, {
+                days: scaleDays,
+                months: scaleMonths,
+                years: scaleYears,
+            });
             onValueChange?.(newValue);
             return;
         }
 
         if (e.key === "ArrowDown") {
-            const newValue = subMinutes(myValue, incScale);
+            const newValue = subDate(myValue, {
+                days: scaleDays,
+                months: scaleMonths,
+                years: scaleYears,
+            });
             onValueChange?.(newValue);
             return;
         }

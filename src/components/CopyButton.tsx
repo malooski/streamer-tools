@@ -17,6 +17,7 @@ const InnerCopyButton = styled.button`
     padding: 8px;
     border-radius: 0px 8px 8px 0px;
     border: 1px solid grey;
+    font-weight: bold;
 `;
 
 const ReadOnlyInput = styled.input`
@@ -24,7 +25,9 @@ const ReadOnlyInput = styled.input`
     border: 1px solid grey;
     border-radius: 8px 0px 0px 8px;
     padding-left: 8px;
-    color: darkgrey;
+
+    background-color: white;
+    color: black;
 `;
 
 export default function CopyButton(props: CopyButtonProps) {
