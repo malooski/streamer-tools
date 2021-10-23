@@ -156,8 +156,10 @@ interface ReactivePngCssProps {
 }
 
 function getReactivePngCss(props: ReactivePngCssProps): string {
+    const userId = props.userId.trim();
+
     return `
-li.voice-state:not([data-reactid*="${props.userId}"]) { display:none; }
+li.voice-state:not([data-reactid*="${userId}"]) { display:none; }
 
 .avatar {
     content:url(${props.closedUrl});
