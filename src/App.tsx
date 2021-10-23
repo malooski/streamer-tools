@@ -28,6 +28,28 @@ const AboutMeHeader = styled.div`
     gap: 14pt;
 `;
 
+const DonateButton = styled.a`
+    background-color: #00a8e8;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 16px;
+    border: white 1px solid;
+    box-shadow: 0px 0px 8px white;
+
+    text-decoration: none;
+
+    :hover {
+        background-color: #0091d9;
+    }
+
+    font-weight: bold;
+    font-size: large;
+
+    position: fixed;
+    top: 16px;
+    right: 16px;
+`;
+
 function App() {
     return (
         <Router>
@@ -48,6 +70,10 @@ function App() {
                     >
                         <FontAwesomeIcon size="lg" icon={faGithubSquare} />
                     </a>
+
+                    <DonateButton target="_blank" href="https://ko-fi.com/malooski">
+                        Donate!
+                    </DonateButton>
                 </AboutMeHeader>
                 <NavDiv>
                     <Link to="/timezones">Timezones</Link>
