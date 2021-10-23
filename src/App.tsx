@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { HashRouter as Router, Link, Route, Switch, Redirect } from "react-router-dom";
 import styled from "styled-components";
+import ReactivePngPage from "./pages/ReactivePngPage";
 import TimezonesPage from "./pages/TimezonesPage";
 
 const RootDiv = styled.div``;
@@ -50,6 +51,7 @@ function App() {
                 </AboutMeHeader>
                 <NavDiv>
                     <Link to="/timezones">Timezones</Link>
+                    <Link to="/reactive">Reactive PNG</Link>
                 </NavDiv>
                 <Switch>
                     <Route exact path="/">
@@ -57,6 +59,9 @@ function App() {
                     </Route>
                     <Route path="/timezones">
                         <TimezonesPage />
+                    </Route>
+                    <Route path="/reactive">
+                        <ReactivePngPage />
                     </Route>
                 </Switch>
             </RootDiv>
