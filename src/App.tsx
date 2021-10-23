@@ -14,7 +14,7 @@ const NavDiv = styled.div`
     justify-self: center;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
 
     margin-top: 1em;
     margin-bottom: 1em;
