@@ -1,4 +1,5 @@
 # Malooski's Streamer Tools
+Help me add features! [Donate](https://ko-fi.com/malooski)
 
 ## Features
 
