@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import styled from "styled-components";
 import ColumnDiv from "../components/ColDiv";
-import alphaPatternUrl from "../assets/alpha.png";
 import CopyArea from "../components/CopyArea";
 
 const PAGE_WIDTH = 800;
@@ -48,18 +47,28 @@ const DEFAULT_OPEN_URL =
 const UrlPreviewImg = styled.img`
     max-width: ${PAGE_WIDTH}px;
     max-height: ${Math.floor((PAGE_WIDTH * 16) / 9)}px;
-
-    background-image: url(${alphaPatternUrl});
-    background-repeat: repeat;
+    border: 1px solid #ccc;
 `;
+
 export default function ReactivePngPage() {
     const [userId, setUserId] = useState(DEFAULT_USER_ID);
     const [closedUrl, setClosedUrl] = useState(DEFAULT_CLOSED_URL);
     const [openUrl, setOpenUrl] = useState(DEFAULT_OPEN_URL);
+    const [closedBrightness, setClosedBrightness] = useState(50);
+    const [openBrightness, setOpenBrightness] = useState(100);
+    const [jumpHeight, setJumpHeight] = useState(10);
 
     const reactiveCss = useMemo(
-        () => getReactivePngCss({ userId, closedUrl, openUrl }),
-        [userId, closedUrl, openUrl]
+        () =>
+            getReactivePngCss({
+                userId,
+                closedUrl,
+                openUrl,
+                closedBrightness,
+                openBrightness,
+                jumpHeight,
+            }),
+        [userId, closedUrl, openUrl, closedBrightness, openBrightness, jumpHeight]
     );
 
     return (
@@ -126,9 +135,27 @@ export default function ReactivePngPage() {
                     placeholder="https://i.imgur.com/XqQZQ.png"
                     value={closedUrl}
                     onChange={e => setClosedUrl(e.target.value)}
+                    onFocus={selectOnFocus}
                 ></input>
                 <label>Closed Preview</label>
-                <UrlPreviewImg src={closedUrl} />
+                <UrlPreviewImg
+                    style={{
+                        filter: `brightness(${closedBrightness}%)`,
+                    }}
+                    src={closedUrl}
+                />
+            </ColumnDiv>
+
+            <ColumnDiv>
+                <label>Closed Brightness {closedBrightness}%</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="10"
+                    value={closedBrightness}
+                    onChange={e => setClosedBrightness(e.target.valueAsNumber)}
+                />
             </ColumnDiv>
 
             <ColumnDiv>
@@ -137,8 +164,38 @@ export default function ReactivePngPage() {
                     placeholder="https://i.imgur.com/XqQZQ.png"
                     value={openUrl}
                     onChange={e => setOpenUrl(e.target.value)}
+                    onFocus={selectOnFocus}
                 ></input>
-                <UrlPreviewImg src={openUrl} />
+                <UrlPreviewImg
+                    style={{
+                        filter: `brightness(${openBrightness}%)`,
+                    }}
+                    src={openUrl}
+                />
+            </ColumnDiv>
+
+            <ColumnDiv>
+                <label>Open Brightness {openBrightness}%</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="10"
+                    value={openBrightness}
+                    onChange={e => setOpenBrightness(e.target.valueAsNumber)}
+                />
+            </ColumnDiv>
+
+            <ColumnDiv>
+                <label>Jump Height {jumpHeight}px</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={jumpHeight}
+                    onChange={e => setJumpHeight(e.target.valueAsNumber)}
+                />
             </ColumnDiv>
 
             <ColumnDiv>
@@ -153,10 +210,16 @@ interface ReactivePngCssProps {
     userId: string;
     closedUrl: string;
     openUrl: string;
+    closedBrightness: number;
+    openBrightness: number;
+    jumpHeight: number;
 }
 
 function getReactivePngCss(props: ReactivePngCssProps): string {
     const userId = props.userId.trim();
+    const closedBrightness = Math.round(props.closedBrightness);
+    const openBrightness = Math.round(props.openBrightness);
+    const jumpHeight = Math.round(props.jumpHeight);
 
     return `
 li.voice-state:not([data-reactid*="${userId}"]) { display:none; }
@@ -166,7 +229,7 @@ li.voice-state:not([data-reactid*="${userId}"]) { display:none; }
     height:auto !important;
     width:auto !important;
     border-radius:0% !important;
-    filter: brightness(50%);
+    filter: brightness(${closedBrightness}%);
 }
 
 .speaking {
@@ -175,13 +238,13 @@ li.voice-state:not([data-reactid*="${userId}"]) { display:none; }
     animation-name: speak-now;
     animation-duration: 1s;
     animation-fill-mode:forwards;
-    filter: brightness(100%);
+    filter: brightness(${openBrightness}%);
     content:url(${props.openUrl});
 }
 
 @keyframes speak-now {
     0% { bottom:0px; }
-    15% { bottom:10px; }
+    15% { bottom:${jumpHeight}px; }
     30% { bottom:0px; }
 }
 
@@ -190,4 +253,8 @@ div.user{ position: absolute; left:40%; bottom:5%; }
 
 body { background-color: rgba(0, 0, 0, 0); margin: 0px auto; overflow: hidden; }
     `.trim();
+}
+
+function selectOnFocus(event: React.FocusEvent<HTMLInputElement>) {
+    event.target.select();
 }
