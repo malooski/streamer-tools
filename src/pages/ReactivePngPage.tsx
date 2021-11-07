@@ -45,12 +45,6 @@ const InputGrid = styled.div`
     padding: 16px 0px;
 `;
 
-const RawCssDiv = styled.div<{ css: string }>`
-    ${p =>
-        css`
-            ${p.css}
-        `}
-`;
 const DEFAULT_USER_ID = "168501066969645056";
 const DEFAULT_CLOSED_URL =
     "https://cdn.discordapp.com/attachments/815712417208074260/825813085963943946/png-closed.png";
