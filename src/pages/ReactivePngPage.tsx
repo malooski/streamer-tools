@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import ColumnDiv from "../components/ColDiv";
 import CopyArea from "../components/CopyArea";
 
