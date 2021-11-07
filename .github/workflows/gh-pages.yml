@@ -26,6 +26,9 @@ jobs:
             - name: Prepare for deployment
               run: touch build/.nojekyll
 
+            - name: Copy CNAME
+              run: cp CNAME build/CNAME
+
             - name: Deploy to Github Pages
               if: success()
               uses: crazy-max/ghaction-github-pages@v2.0.0
