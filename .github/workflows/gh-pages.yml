@@ -21,7 +21,7 @@ jobs:
             - name: Build
               run: yarn build
               env:
-                  PUBLIC_URL: https://malooski.github.io/streamer-tools/
+                  PUBLIC_URL: https://tools.maloo.ski/
 
             - name: Prepare for deployment
               run: touch build/.nojekyll

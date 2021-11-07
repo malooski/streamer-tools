@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import styled from "styled-components";
+import { useMemo, useRef, useState } from "react";
+import styled, { css } from "styled-components";
 import ColumnDiv from "../components/ColDiv";
 import CopyArea from "../components/CopyArea";
 
@@ -38,6 +38,19 @@ const SpacedUl = styled.ul`
     }
 `;
 
+const InputGrid = styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 16px;
+    padding: 16px 0px;
+`;
+
+const RawCssDiv = styled.div<{ css: string }>`
+    ${p =>
+        css`
+            ${p.css}
+        `}
+`;
 const DEFAULT_USER_ID = "168501066969645056";
 const DEFAULT_CLOSED_URL =
     "https://cdn.discordapp.com/attachments/815712417208074260/825813085963943946/png-closed.png";
@@ -58,6 +71,8 @@ export default function ReactivePngPage() {
     const [openBrightness, setOpenBrightness] = useState(100);
     const [jumpHeight, setJumpHeight] = useState(10);
 
+    const ref = useRef<HTMLUListElement | null>(null);
+
     const reactiveCss = useMemo(
         () =>
             getReactivePngCss({
@@ -70,6 +85,11 @@ export default function ReactivePngPage() {
             }),
         [userId, closedUrl, openUrl, closedBrightness, openBrightness, jumpHeight]
     );
+
+    if (ref.current) {
+        const r = ref.current;
+        r.style.cssText = reactiveCss;
+    }
 
     return (
         <RootDiv>
@@ -121,23 +141,45 @@ export default function ReactivePngPage() {
             </SpacedUl>
 
             <ColumnDiv>
-                <label>User ID</label>
-                <input
-                    placeholder="168501066969645056"
-                    value={userId}
-                    onChange={e => setUserId(e.target.value)}
-                ></input>
+                <h3>General Properties</h3>
+                <InputGrid>
+                    <label>User ID</label>
+                    <input
+                        placeholder="168501066969645056"
+                        value={userId}
+                        onChange={e => setUserId(e.target.value)}
+                        onFocus={selectOnFocus}
+                    ></input>
+                </InputGrid>
             </ColumnDiv>
 
             <ColumnDiv>
-                <label>Closed URL</label>
-                <input
-                    placeholder="https://i.imgur.com/XqQZQ.png"
-                    value={closedUrl}
-                    onChange={e => setClosedUrl(e.target.value)}
-                    onFocus={selectOnFocus}
-                ></input>
-                <label>Closed Preview</label>
+                <h3>Closed Properties</h3>
+                <InputGrid>
+                    <label>Closed URL</label>
+                    <input
+                        placeholder="https://i.imgur.com/XqQZQ.png"
+                        value={closedUrl}
+                        onChange={e => setClosedUrl(e.target.value)}
+                        onFocus={selectOnFocus}
+                    ></input>
+                    <label>Closed Brightness</label>
+                    <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="10"
+                        value={closedBrightness}
+                        onChange={e => setClosedBrightness(e.target.valueAsNumber)}
+                    />
+                    <label>Open URL</label>
+                    <input
+                        placeholder="https://i.imgur.com/XqQZQ.png"
+                        value={openUrl}
+                        onChange={e => setOpenUrl(e.target.value)}
+                        onFocus={selectOnFocus}
+                    ></input>
+                </InputGrid>
                 <UrlPreviewImg
                     style={{
                         filter: `brightness(${closedBrightness}%)`,
@@ -147,25 +189,35 @@ export default function ReactivePngPage() {
             </ColumnDiv>
 
             <ColumnDiv>
-                <label>Closed Brightness {closedBrightness}%</label>
-                <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="10"
-                    value={closedBrightness}
-                    onChange={e => setClosedBrightness(e.target.valueAsNumber)}
-                />
-            </ColumnDiv>
+                <h3>Open Properties</h3>
+                <InputGrid>
+                    <label>Open URL</label>
+                    <input
+                        placeholder="https://i.imgur.com/XqQZQ.png"
+                        value={closedUrl}
+                        onChange={e => setOpenUrl(e.target.value)}
+                        onFocus={selectOnFocus}
+                    ></input>
+                    <label>Open Brightness</label>
+                    <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="10"
+                        value={openBrightness}
+                        onChange={e => setOpenBrightness(e.target.valueAsNumber)}
+                    />
+                    <label>Jump Height</label>
+                    <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="5"
+                        value={jumpHeight}
+                        onChange={e => setJumpHeight(e.target.valueAsNumber)}
+                    />
+                </InputGrid>
 
-            <ColumnDiv>
-                <label>Open URL</label>
-                <input
-                    placeholder="https://i.imgur.com/XqQZQ.png"
-                    value={openUrl}
-                    onChange={e => setOpenUrl(e.target.value)}
-                    onFocus={selectOnFocus}
-                ></input>
                 <UrlPreviewImg
                     style={{
                         filter: `brightness(${openBrightness}%)`,
@@ -174,32 +226,13 @@ export default function ReactivePngPage() {
                 />
             </ColumnDiv>
 
-            <ColumnDiv>
-                <label>Open Brightness {openBrightness}%</label>
-                <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="10"
-                    value={openBrightness}
-                    onChange={e => setOpenBrightness(e.target.valueAsNumber)}
-                />
-            </ColumnDiv>
+            <ColumnDiv></ColumnDiv>
 
             <ColumnDiv>
-                <label>Jump Height {jumpHeight}px</label>
-                <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="5"
-                    value={jumpHeight}
-                    onChange={e => setJumpHeight(e.target.valueAsNumber)}
-                />
-            </ColumnDiv>
-
-            <ColumnDiv>
-                <label>CSS</label>
+                <label>
+                    <h3>Output CSS </h3>
+                    (Copy this into your browser source)
+                </label>
                 <CopyArea value={reactiveCss} />
             </ColumnDiv>
         </RootDiv>
@@ -241,7 +274,7 @@ li.voice-state:not([data-reactid*="${userId}"]) { display:none; }
     filter: brightness(${openBrightness}%);
     content:url(${props.openUrl});
 }
-
+ 
 @keyframes speak-now {
     0% { bottom:0px; }
     15% { bottom:${jumpHeight}px; }
