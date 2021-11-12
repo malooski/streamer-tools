@@ -1,5 +1,5 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faClock, faGlobe, faTrash, faUserPlus, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faGlobe, faTrash, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format, formatDistanceToNow } from "date-fns";
 import React, { useState } from "react";
