@@ -40,7 +40,9 @@ export default function Select<T>(props: SelectProps<T>) {
             onChange={onChange}
         >
             {props.options.map((opt, idx) => (
-                <option value={idx}>{opt.text}</option>
+                <option key={idx} value={idx}>
+                    {opt.text}
+                </option>
             ))}
         </select>
     );

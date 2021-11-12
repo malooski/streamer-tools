@@ -144,7 +144,7 @@ export default function TimezonesPage() {
                 <CalendarInput value={refTime} onValueChange={v => setRefTime(v)} />
             </ColDiv>
 
-            <ColDiv gap="em">
+            <ColDiv gap="1em">
                 <SectionHeader
                     title="Common"
                     icon={<FontAwesomeIcon icon={faGlobe} />}
@@ -154,7 +154,7 @@ export default function TimezonesPage() {
                     <TzEntryHeader>Timezone</TzEntryHeader>
                     <TzEntryHeader>Local Time</TzEntryHeader>
 
-                    {COMMON_TIMEZONES.map(f => renderCommon(f))}
+                    {COMMON_TIMEZONES.map((tz, idx) => renderCommon(tz, idx))}
                 </CommonDiv>
             </ColDiv>
 
@@ -238,9 +238,9 @@ export default function TimezonesPage() {
         });
     }
 
-    function renderCommon(friend: TimezoneEntry) {
+    function renderCommon(friend: TimezoneEntry, idx: number) {
         return (
-            <React.Fragment>
+            <React.Fragment key={idx}>
                 <MaybeLink href={friend.link} text={friend.name} />
                 <TimeInput timezone={friend.timezone} value={refTime} onValueChange={setRefTime} />
             </React.Fragment>
@@ -249,7 +249,7 @@ export default function TimezonesPage() {
 
     function renderFriend(friend: TimezoneEntry, idx: number) {
         return (
-            <React.Fragment>
+            <React.Fragment key={idx}>
                 <MaybeLink href={friend.link} text={friend.name} />
                 <span>{friend.timezone}</span>
                 <TimeInput timezone={friend.timezone} value={refTime} onValueChange={setRefTime} />

@@ -26,13 +26,28 @@ const SubTitle = styled.p`
     margin: 0;
 `;
 
+const IconArea = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+
+    margin-right: 0.5em;
+
+    vertical-align: middle;
+
+    svg {
+        height: 1.5em;
+    }
+`;
+
 export default function SectionHeader(props: SectionHeaderProps) {
-    const { title, subtitle } = props;
+    const { title, subtitle, icon } = props;
 
     return (
         <RootDiv>
             <TopArea>
-                {props.icon}
+                {icon != null && <IconArea>{icon}</IconArea>}
                 <MainTitle>{title}</MainTitle>
             </TopArea>
             {subtitle && <SubTitle>{subtitle}</SubTitle>}

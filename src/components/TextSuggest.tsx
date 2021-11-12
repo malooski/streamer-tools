@@ -30,7 +30,7 @@ export function TextSuggest(props: TextSuggestProps) {
             ></Input>
             <datalist id={listName}>
                 {mySuggestions.map(s => (
-                    <option value={s} />
+                    <option key={s} value={s} />
                 ))}
             </datalist>
         </React.Fragment>

@@ -116,6 +116,7 @@ export default function CalendarInput(props: CalendarInputProps) {
 
                 {daysInCal.map(d => (
                     <CalDayButton
+                        key={d.getTime()}
                         value={props.value}
                         current={d}
                         focused={focused}
