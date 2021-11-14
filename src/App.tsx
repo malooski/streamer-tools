@@ -5,6 +5,7 @@ import { HashRouter as Router, Link, Route, Switch, Redirect } from "react-route
 import styled from "styled-components";
 import ReactivePngPage from "./pages/ReactivePngPage";
 import TimezonesPage from "./pages/TimezonesPage";
+import UsefulLinksPage from "./pages/UsefulLinksPage";
 
 const RootDiv = styled.div``;
 
@@ -78,6 +79,7 @@ function App() {
                 <NavDiv>
                     <Link to="/timezones">Timezones</Link>
                     <Link to="/reactive">Reactive PNG</Link>
+                    <Link to="/links">Useful Links</Link>
                 </NavDiv>
                 <Switch>
                     <Route exact path="/">
@@ -88,6 +90,9 @@ function App() {
                     </Route>
                     <Route path="/reactive">
                         <ReactivePngPage />
+                    </Route>
+                    <Route path="/links">
+                        <UsefulLinksPage />
                     </Route>
                 </Switch>
             </RootDiv>
